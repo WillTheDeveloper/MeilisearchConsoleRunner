@@ -9,8 +9,27 @@ namespace MeilisearchConsoleRunner
 {
     internal class Program
     {
-        static void Main(string[] args)
+        public class Movie
         {
+            public string Id { get; set; }
+            public string Title { get; set; }
+            public string Genre { get; set; }
+        }
+
+
+        static async Task Main(string[] args)
+        {
+            var client = new MeilisearchClient("http://localhost:7700", "masterKey");
+            var index = await client.Index<Movie>("movies");
+            var movie = new Movie
+            {
+                Id = "123",
+                Title = "Pulp Fiction",
+                Genre = "Crime"
+            };
+            await index.AddDocuments(new List<Movie> { movie });
+            var searchResult = await index.Search<Movie>("Pulp Fiction");
+            Console.WriteLine(searchResult);
         }
     }
 }
